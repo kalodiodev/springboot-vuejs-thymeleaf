@@ -15,6 +15,9 @@
 	<description>VueJs combined with thymeleaf</description>
 	<properties>
 		<java.version>11</java.version>
+		<frontend-maven-plugin.version>1.10.0</frontend-maven-plugin.version>
+		<node.version>v12.16.1</node.version>
+		<npm.version>6.14.5</npm.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -67,6 +70,7 @@
 	</dependencies>
 
 	<build>
+		<defaultGoal>spring-boot:run</defaultGoal>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -81,6 +85,137 @@
 				</configuration>
 			</plugin>
 		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>com.github.eirslett</groupId>
+					<artifactId>frontend-maven-plugin</artifactId>
+					<version>${frontend-maven-plugin.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.github.eirslett</groupId>
+						<artifactId>frontend-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>install node and npm</id>
+								<goals>
+									<goal>install-node-and-npm</goal>
+								</goals>
+								<configuration>
+									<nodeVersion>${node.version}</nodeVersion>
+									<npmVersion>${npm.version}</npmVersion>
+								</configuration>
+							</execution>
+							<execution>
+								<id>npm install</id>
+								<goals>
+									<goal>npm</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>build tailwind development</id>
+								<goals>
+									<goal>npm</goal>
+								</goals>
+								<configuration>
+									<arguments>run style</arguments>
+									<environmentVariables>
+										<APP_VERSION>${project.version}</APP_VERSION>
+									</environmentVariables>
+									<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
+								</configuration>
+							</execution>
+							<execution>
+								<id>npm run dev</id>
+								<goals>
+									<goal>npm</goal>
+								</goals>
+								<phase>generate-resources</phase>
+								<configuration>
+									<arguments>run dev</arguments>
+									<environmentVariables>
+										<APP_VERSION>${project.version}</APP_VERSION>
+									</environmentVariables>
+									<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>prod</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.github.eirslett</groupId>
+						<artifactId>frontend-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>install node and npm</id>
+								<goals>
+									<goal>install-node-and-npm</goal>
+								</goals>
+								<configuration>
+									<nodeVersion>${node.version}</nodeVersion>
+									<npmVersion>${npm.version}</npmVersion>
+								</configuration>
+							</execution>
+							<execution>
+								<id>npm install</id>
+								<goals>
+									<goal>npm</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>build tailwind production</id>
+								<goals>
+									<goal>npm</goal>
+								</goals>
+								<configuration>
+									<arguments>run style-production</arguments>
+									<environmentVariables>
+										<APP_VERSION>${project.version}</APP_VERSION>
+									</environmentVariables>
+									<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
+								</configuration>
+							</execution>
+							<execution>
+								<id>npm run prod</id>
+								<goals>
+									<goal>npm</goal>
+								</goals>
+								<phase>generate-resources</phase>
+								<configuration>
+									<arguments>run build</arguments>
+									<environmentVariables>
+										<APP_VERSION>${project.version}</APP_VERSION>
+									</environmentVariables>
+									<npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

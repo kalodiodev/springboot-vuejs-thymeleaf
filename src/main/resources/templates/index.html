@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Demo</title>
+    <link href="/app/js/app.js" rel="preload" as="script">
+    <link href="/app/js/chunk-vendors.js" rel="preload" as="script">
+    <link th:href="${'/css/style.css'}" href="../static/css/style.css" rel="stylesheet">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+</head>
+<body>
+<div id="app">
+    <hello-world :msg="'Welcome to Spring Boot + Vuejs + Tailwindcss'"></hello-world>
+</div>
+
+<script type="text/javascript" src="/app/js/chunk-vendors.js"></script>
+<script type="text/javascript" src="/app/js/app.js"></script>
+</body>
+</html>
